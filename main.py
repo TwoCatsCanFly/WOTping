@@ -72,7 +72,7 @@ class WOTServer:
 
 
 def main():
-    print('WOTping start')
+    print(f'WOT-ping v{ver} started...')
     for server in server_list:
         ip = server['ip']
         name = server['name']
