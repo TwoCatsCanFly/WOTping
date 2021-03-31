@@ -10,6 +10,8 @@ class WOTServer:
     def __init__(self, ip, name):
         self.ip = ip
         self.name = name
+        self.interval = 30000
+        self.auto_check = False
 
     def ping_me(self):
         ping = popen(f"ping {self.ip}").read()
@@ -24,10 +26,8 @@ def main():
     for server in server_list:
         ip  =server['ip']
         name  =server['name']
-        print(f'ip {ip} name {name}')
         name = WOTServer(ip,name)
         name.ping_me()
-
     return True
 
 
