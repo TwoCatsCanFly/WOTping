@@ -3,6 +3,7 @@ import threading
 from time import sleep
 from re import findall
 from os import popen
+from data_controller import DataController
 
 ver = 0.3
 server_list = [
@@ -82,4 +83,5 @@ def main():
 
 
 if __name__ == '__main__':
+    test = DataController(lol='kjk')
     main()
