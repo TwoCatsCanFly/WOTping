@@ -3,9 +3,10 @@ import threading
 from time import sleep
 from re import findall
 from os import popen
-from data_controller import DataController
+from tools import Worker
+from GUI import CLI
 
-ver = 0.3
+ver = 0.4
 server_list = [
     {'ip': 'login.p1.worldoftanks.net', 'name': 'RU1'},
     {'ip': 'login.p2.worldoftanks.net', 'name': 'RU2'},
@@ -31,57 +32,18 @@ server_list = [
     {'ip': 'login.worldoftanks.kr', 'name': 'ROK1'},
 ]
 
-
-class WOTServer:
-    def __init__(self, ip, name):
-        self.ip = ip
-        self.name = name
-        self.interval = 10
-        self.auto_check = False
-        self.single_mode = False
-
-    def ping_me(self):
-        if self.single_mode:
-            flag = '-n' if system().lower() == 'windows' else '-c'
-            ping = popen(f"ping {flag} 1 {self.ip}").read()
-            ping = findall('Average = \d{1,100}', ping)
-        else:
-            ping = popen(f"ping {self.ip}").read()
-            ping = findall('Average = \d{1,100}', ping)
-        if ping == []:
-            result = False
-        else:
-            result = ping[0][10:]
-        return result
-
-    def result_print(self, ping):
-        if ping == False:
-            print(f"{self.name} - {self.ip} is DOWN.")
-        else:
-            print(f"{self.name} - {self.ip} is UP. Ping = {ping}ms")
-
-    def ping_executor(self):
-        while self.auto_check:
-            ping = self.ping_me()
-            self.result_print(ping)
-            sleep(self.interval)
-        self.result_print(self.ping_me())
-
-    def async_ping(self):
-        thread = threading.Thread(target=self.ping_executor)
-        thread.start()
-
+args = {
+    'interval' : 10,
+    'auto_check' : False,
+    'single_mode' : False,
+    'server_list': server_list
+}
 
 def main():
     print(f'WOT-ping v{ver} started...')
-    for server in server_list:
-        ip = server['ip']
-        name = server['name']
-        name = WOTServer(ip, name)
-        name.async_ping()
-    return True
-
+    worker = Worker(args)
+    worker.prep_servers()
+    worker.start()
 
 if __name__ == '__main__':
-    test = DataController(lol='kjk')
     main()
